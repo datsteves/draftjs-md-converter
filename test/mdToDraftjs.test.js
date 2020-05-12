@@ -370,6 +370,40 @@ describe('mdToDraftjs', () => {
     mdToDraftjs(markdown).should.deep.equal(expectedDraftjs);
   });
 
+  it.only('converts markdown to check lists correctly', () => {
+    const markdown = '- [ ] First\n- [x] Second';
+    const expectedDraftjs = {
+      blocks: [
+        {
+          data: {
+            checked: false
+          },
+          text: 'First',
+          type: 'todo',
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: []
+        },
+        {
+          data: {
+            checked: true
+          },
+          text: 'Second',
+          type: 'todo',
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: []
+        }
+      ],
+      entityMap: {
+        type: '',
+        mutability: '',
+        data: ''
+      }
+    };
+    mdToDraftjs(markdown).should.deep.equal(expectedDraftjs);
+  });
+
   it('converts markdown to ordered lists correctly', () => {
     const markdown = '1. First\n2. Second\n3. Third';
     const expectedDraftjs = {

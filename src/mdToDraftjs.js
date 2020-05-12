@@ -42,6 +42,12 @@ const getBlockStyleForMd = (node, blockStyles) => {
     return 'atomic';
   } else if (node.type === 'Paragraph' && node.raw && node.raw.match(/^\[\[\s\S+\s.*\S+\s\]\]/)) {
     return 'atomic';
+  } else if (
+    node.type === 'List' &&
+    node.raw &&
+    (node.raw.indexOf('- [x]') !== -1 || node.raw.indexOf('- [ ]') !== -1)
+  ) {
+    return 'todo';
   }
   return blockStyles[style];
 };
@@ -84,6 +90,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   const inlineStyleRanges = [];
   const entityRanges = [];
   const entityMap = existingEntities;
+  const data = {};
 
   const addInlineStyleRange = (offset, length, style) => {
     inlineStyleRanges.push({ offset, length, style });
@@ -169,7 +176,9 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
           addVideo(child);
         }
         break;
-      default:
+      default: {
+        break;
+      }
     }
 
     if (!videoShortcodeRegEx.test(child.raw) && child.children && style) {
@@ -209,6 +218,11 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
     if (style) {
       blockStyle = style;
     }
+
+    if (astString.children[0].type === 'List' && astString.children[0].children[0]) {
+      console.log(astString.children[0].children[0]);
+      data.checked = astString.children[0].children[0].checked;
+    }
   }
 
   return {
@@ -216,7 +230,8 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
     inlineStyleRanges,
     entityRanges,
     blockStyle,
-    entityMap
+    entityMap,
+    data
   };
 };
 
@@ -232,7 +247,8 @@ function mdToDraftjs(mdString, extraStyles) {
       type: result.blockStyle,
       depth: 0,
       inlineStyleRanges: result.inlineStyleRanges,
-      entityRanges: result.entityRanges
+      entityRanges: result.entityRanges,
+      data: result.data
     });
     entityMap = result.entityMap;
   });
