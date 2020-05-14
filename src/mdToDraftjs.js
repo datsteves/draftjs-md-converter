@@ -220,8 +220,12 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
     }
 
     if (astString.children[0].type === 'List' && astString.children[0].children[0]) {
-      console.log(astString.children[0].children[0]);
-      data.checked = astString.children[0].children[0].checked;
+      if (
+        astString.children[0].children[0].checked === true ||
+        astString.children[0].children[0].checked === false
+      ) {
+        data.checked = astString.children[0].children[0].checked;
+      }
     }
   }
 
