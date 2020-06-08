@@ -45,7 +45,12 @@ const getBlockStyleForMd = (node, blockStyles) => {
   } else if (
     node.type === 'List' &&
     node.raw &&
-    (node.raw.indexOf('- [x]') !== -1 || node.raw.indexOf('- [ ]') !== -1)
+    (node.raw.indexOf('- [x]') !== -1 ||
+      node.raw.indexOf('- [ ]') !== -1 ||
+      node.raw.indexOf('* [x]') !== -1 ||
+      node.raw.indexOf('* [ ]') !== -1 ||
+      node.raw.indexOf('- [X]') !== -1 ||
+      node.raw.indexOf('* [X]') !== -1)
   ) {
     return 'todo';
   }
