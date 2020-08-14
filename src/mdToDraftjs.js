@@ -77,7 +77,13 @@ const joinCodeBlocks = splitMd => {
 };
 
 const splitMdBlocks = md => {
-  const splitMd = md.split('\n');
+  let splitMd = md.split('\n');
+  splitMd = splitMd.filter((elem, i, arr) => {
+    if (elem === '' && arr[i + 1] === '') {
+      return false;
+    }
+    return true;
+  });
 
   // Process the split markdown include the
   // one syntax where there's an block level opening
